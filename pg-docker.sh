@@ -67,7 +67,7 @@ elif [[ "$COMMAND" == "info" ]]; then
 else
   echo "Syntax:"
   echo ""
-  echo "./pg-docker-script.sh run-pg-container|dump|restore|info"
+  echo "./pg-docker.sh run-pg-container|dump|restore|info"
   echo ""
   exit 1
 fi
