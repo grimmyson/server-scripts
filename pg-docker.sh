@@ -39,12 +39,12 @@ if [[ $COMMAND == "run-pg-container" ]]; then
   fi
 
   PGDATA="/var/lib/postgresql/data/pgdata"
-  PG_FOLDER="$HOME/postgres-14.5-db"
+  PG_FOLDER="$HOME/$CN_NAME-db"
   
   mkdir -p $PG_FOLDER
 
   docker run -d --name $CN_NAME --restart unless-stopped \
-  -p 5432:5432 \
+  -p 127.0.0.1:5432:5432 \
   -e PGDATA=$PGDATA -e POSTGRES_PASSWORD=$PG_PASS \
   -v $PG_FOLDER:$PGDATA postgres:14.5
 elif [[ "$COMMAND" == "dump" ]]; then
