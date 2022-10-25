@@ -28,25 +28,32 @@ checkDUMP_FILE() {
 }
 
 COMMAND=$1
+PG_VERSION='14.5'
 
 if [[ $COMMAND == "run-pg-container" ]]; then
   checkCN_NAME
 
   PG_PASS=$(cat pgpass.txt 2> /dev/null)
   if [ -z "$PG_PASS" ]; then
-    echo "Create pgpass.txt file with genereted password"
+    echo "Create a pgpass.txt file with the password"
     exit 1
+  fi
+
+  if [[ $(docker network ls | grep pg-net | wc -l) -eq 0 ]]; then
+    docker network create --subnet 172.20.0.0/16 pg-net
   fi
 
   PGDATA="/var/lib/postgresql/data/pgdata"
   PG_FOLDER="$HOME/$CN_NAME-db"
-  
+
   mkdir -p $PG_FOLDER
 
   docker run -d --name $CN_NAME --restart unless-stopped \
   -p 127.0.0.1:5432:5432 \
   -e PGDATA=$PGDATA -e POSTGRES_PASSWORD=$PG_PASS \
-  -v $PG_FOLDER:$PGDATA postgres:14.5
+  -v $PG_FOLDER:$PGDATA \
+  --net pg-net --ip 172.20.0.2 \
+  postgres:$PG_VERSION
 elif [[ "$COMMAND" == "dump" ]]; then
   checkCN_NAME
   checkDB_NAME
