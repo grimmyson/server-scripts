@@ -28,7 +28,7 @@ checkDUMP_FILE() {
 }
 
 COMMAND=$1
-PG_VERSION='14.5'
+PG_VERSION="14.6"
 
 if [[ $COMMAND == "run-pg-container" ]]; then
   checkCN_NAME
