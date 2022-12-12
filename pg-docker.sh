@@ -1,14 +1,5 @@
 #!/bin/bash
 
-checkCN_NAME() {
-  if [ -z "$CN_NAME" ]; then
-    echo "Please set container name variable, use:"
-    echo "export CN_NAME="
-    exit 1
-  fi
-  echo "Container name: $CN_NAME"
-}
-
 checkDB_NAME() {
   if [ -z "$DB_NAME" ]; then
     echo "Please set database name variable, use:"
@@ -28,11 +19,10 @@ checkDUMP_FILE() {
 }
 
 COMMAND=$1
-PG_VERSION="14.6"
+PG_VERSION="15.1"
+CN_NAME="postgres-$PG_VERSION"
 
 if [[ $COMMAND == "run-pg-container" ]]; then
-  checkCN_NAME
-
   PG_PASS=$(cat pgpass.txt 2> /dev/null)
   if [ -z "$PG_PASS" ]; then
     echo "Create a pgpass.txt file with the password"
@@ -55,12 +45,9 @@ if [[ $COMMAND == "run-pg-container" ]]; then
   --net pg-net --ip 172.20.0.2 \
   postgres:$PG_VERSION
 elif [[ "$COMMAND" == "dump" ]]; then
-  checkCN_NAME
   checkDB_NAME
-
   docker exec $CN_NAME pg_dump -U postgres --format=t $DB_NAME | gzip -9 > $DB_NAME-$(date +%Y-%m-%d_%H-%M-%S).gz
 elif [[ "$COMMAND" == "restore" ]]; then
-  checkCN_NAME
   checkDB_NAME
   checkDUMP_FILE
 
