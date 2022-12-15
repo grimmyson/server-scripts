@@ -34,7 +34,7 @@ if [[ $COMMAND == "run-pg-container" ]]; then
   fi
 
   PGDATA="/var/lib/postgresql/data/pgdata"
-  PG_FOLDER="$HOME/$CN_NAME-db"
+  PG_FOLDER="$HOME/postgres-db"
 
   mkdir -p $PG_FOLDER
 
