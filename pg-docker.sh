@@ -22,10 +22,11 @@ COMMAND=$1
 PG_VERSION="15.1"
 CN_NAME="postgres-$PG_VERSION"
 
-if [[ $COMMAND == "run-pg-container" ]]; then
-  PG_PASS=$(cat pgpass.txt 2> /dev/null)
-  if [ -z "$PG_PASS" ]; then
-    echo "Create a pgpass.txt file with the password"
+if [[ $COMMAND == "run-container" ]]; then
+  PG_PASSWORD="$HOME/pg_password"
+
+  if [ ! -f $PG_PASSWORD ]; then
+    echo "Create a ~/pg_password file with the password"
     exit 1
   fi
 
@@ -33,6 +34,7 @@ if [[ $COMMAND == "run-pg-container" ]]; then
     docker network create --subnet 172.20.0.0/16 pg-net
   fi
 
+  PGPASS="/run/secrets/pg_password"
   PGDATA="/var/lib/postgresql/data/pgdata"
   PG_FOLDER="$HOME/postgres-db"
 
@@ -40,10 +42,12 @@ if [[ $COMMAND == "run-pg-container" ]]; then
 
   docker run -d --name $CN_NAME --restart unless-stopped \
   -p 127.0.0.1:5432:5432 \
-  -e PGDATA=$PGDATA -e POSTGRES_PASSWORD=$PG_PASS \
-  -v $PG_FOLDER:$PGDATA \
+  -e PGDATA=$PGDATA -e POSTGRES_PASSWORD_FILE=$PGPASS \
+  -v $PG_FOLDER:$PGDATA -v $PG_PASSWORD:$PGPASS \
   --net pg-net --ip 172.20.0.2 \
   postgres:$PG_VERSION
+
+  echo '' > $PG_PASSWORD
 elif [[ "$COMMAND" == "dump" ]]; then
   checkDB_NAME
   docker exec $CN_NAME pg_dump -U postgres --format=t $DB_NAME | gzip -9 > $DB_NAME-$(date +%Y-%m-%d_%H-%M-%S).gz
@@ -61,7 +65,7 @@ elif [[ "$COMMAND" == "info" ]]; then
 else
   echo "Syntax:"
   echo ""
-  echo "./pg-docker.sh run-pg-container|dump|restore|info"
+  echo "./pg-docker.sh run-container|dump|restore|info"
   echo ""
   exit 1
 fi
