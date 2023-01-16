@@ -23,10 +23,11 @@ PG_VERSION="15.1"
 CN_NAME="postgres-$PG_VERSION"
 
 if [[ $COMMAND == "run-container" ]]; then
-  PG_PASSWORD="$HOME/pg_password"
+  PG_FOLDER="$HOME/postgres-db"
+  PG_PASSWORD="$PG_FOLDER/pg_password"
 
   if [ ! -f $PG_PASSWORD ]; then
-    echo "Create a ~/pg_password file with the password"
+    echo "Create a ~/postgres-db/pg_password file with the password"
     exit 1
   fi
 
@@ -36,9 +37,6 @@ if [[ $COMMAND == "run-container" ]]; then
 
   PGPASS="/run/secrets/pg_password"
   PGDATA="/var/lib/postgresql/data/pgdata"
-  PG_FOLDER="$HOME/postgres-db"
-
-  mkdir -p $PG_FOLDER
 
   docker run -d --name $CN_NAME --restart unless-stopped \
   -p 127.0.0.1:5432:5432 \
@@ -47,7 +45,7 @@ if [[ $COMMAND == "run-container" ]]; then
   --net pg-net --ip 172.20.0.2 \
   postgres:$PG_VERSION
 
-  echo '' > $PG_PASSWORD
+  echo "" > $PG_PASSWORD
 elif [[ "$COMMAND" == "dump" ]]; then
   checkDB_NAME
   docker exec $CN_NAME pg_dump -U postgres --format=t $DB_NAME | gzip -9 > $DB_NAME-$(date +%Y-%m-%d_%H-%M-%S).gz
