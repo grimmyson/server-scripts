@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VAULT_VERSION="1.12.2"
+VAULT_VERSION="1.14.1"
 CN_NAME="vault-$VAULT_VERSION"
 
 mkdir -p $HOME/vault/{file,config}
@@ -32,7 +32,7 @@ docker run -d --name $CN_NAME --restart unless-stopped \
 -e VAULT_API_ADDR='http://127.0.0.1:8200' \
 --cap-add=IPC_LOCK \
 --net pg-net --ip 172.20.0.3 \
-vault:$VAULT_VERSION server
+hashicorp/vault:$VAULT_VERSION server
 
 echo ""
 echo "Use this command to initialize the vault:"

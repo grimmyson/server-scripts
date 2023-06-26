@@ -19,7 +19,7 @@ checkDUMP_FILE() {
 }
 
 COMMAND=$1
-PG_VERSION="15.1"
+PG_VERSION="15.3"
 CN_NAME="postgres-$PG_VERSION"
 
 if [[ $COMMAND == "run-container" ]]; then
