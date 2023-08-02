@@ -24,7 +24,7 @@ CN_NAME="postgres-$PG_VERSION"
 
 if [[ $COMMAND == "run-container" ]]; then
   PG_FOLDER="$HOME/postgres-db"
-  PG_PASSWORD="$PG_FOLDER/pg_password"
+  PG_PASSWORD="$HOME/pg_password"
 
   if [ ! -f $PG_PASSWORD ]; then
     echo "Create a ~/postgres-db/pg_password file with the password"
