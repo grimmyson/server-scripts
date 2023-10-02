@@ -54,7 +54,7 @@ elif [[ "$COMMAND" == "renew" ]]; then
   docker run --rm --name certbot --net host \
   -v "$LETSENCRYPT_FOLDER/etc/letsencrypt:/etc/letsencrypt" \
   -v "$LETSENCRYPT_FOLDER/var/lib/letsencrypt:/var/lib/letsencrypt" \
-  certbot/certbot renew
+  certbot/certbot renew --agree-tos --standalone
 else
   echo "Syntax:"
   echo ""
