@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VAULT_VERSION="1.14.3"
+VAULT_VERSION="1.15.2"
 CN_NAME="vault-$VAULT_VERSION"
 
 mkdir -p $HOME/vault/{file,config}
